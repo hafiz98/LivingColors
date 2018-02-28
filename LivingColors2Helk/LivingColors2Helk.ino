@@ -15,9 +15,9 @@ int colorNumberHelkBout;
 int colorValueHelkBout;
 
 // Pins
-int aoRedLedHelkBout = 11;
-int aoGreenLedHelkBout = 10;
-int aoBlueLedHelkBout = 9;
+int aoRedLedHelkBout = 9;
+int aoGreenLedHelkBout = 11;
+int aoBlueLedHelkBout = 10;
 int aiPotHelkBout = A0;
 int diPresetCmyHelkBout = 2;
 int diPresetRgbHelkBout = 3;
@@ -30,8 +30,8 @@ void setup()
   initGlobals();
   initPins();
 
-  demoMode();
-  updateColor();
+  //demoMode();
+  //updateColor();
 
 }
 
@@ -68,6 +68,7 @@ void initPins()
   analogWrite(aoGreenLedHelkBout, 255);
   analogWrite(aoBlueLedHelkBout, 255);
 
+  delay(500);
   Serial.println("finished...");
 }
 
@@ -97,19 +98,30 @@ void demoMode()
 {
   debugLogging("Entering demo mode", 2);
 
+  colorNumberHelkBout = 0;
+  colorValueHelkBout = 0;
+
   while (colorNumberHelkBout < 3)
   {
-    while (colorValueHelkBout < 256)
-    {
-      updateColor();
-      colorValueHelkBout++;
-    }
+    colorValueHelkBout = 255;
+
     while (colorValueHelkBout >= 0)
     {
       updateColor();
-      delay(200);
+      delay(5);
       colorValueHelkBout--;
     }
+    
+    colorValueHelkBout = 0;
+
+    while (colorValueHelkBout < 256)
+    {
+      updateColor();
+      delay(5);
+      colorValueHelkBout++;
+    }
+
+
     colorNumberHelkBout++;
   }
 
@@ -118,24 +130,27 @@ void demoMode()
 
 void updateColor()
 {
-  debugLogging("Updating color", 2);
+  //debugLogging("Updating color, nr:" + (String)colorNumberHelkBout + " value: " + (String)colorValueHelkBout + ".  Knop = " + diPresetCmyHelkBout, 2);
   //debugLogging("Color value: " + (String)colorValueHelkBout, 1);
-
+  debugLogging("Update color Started", 2);
   switch (colorNumberHelkBout)
   {
     case 0:
       analogWrite(aoRedLedHelkBout, colorValueHelkBout);
+            //debugLogging("Red", 1);
       break;
     case 1:
       analogWrite(aoGreenLedHelkBout, colorValueHelkBout);
+            //debugLogging("Green", 1);
       break;
     default:
       analogWrite(aoBlueLedHelkBout, colorValueHelkBout);
+            //debugLogging("Blue", 1);
       break;
   }
 
 
-  debugLogging("Demo mode finished", 2);
+  debugLogging("Update color Finished", 2);
 }
 
 
@@ -144,10 +159,13 @@ void handlePresets()
   if (digitalRead(diPresetCmyHelkBout) == LOW)
   {
     setCmy();
+    debugLogging("CmyKnop is pressed", 2);
+
   }
   else if (digitalRead(diPresetRgbHelkBout) == LOW)
   {
-    setRgb();
+    colorRGB();
+    debugLogging("RgbKnop is pressed", 2);
   }
 }
 
@@ -166,55 +184,108 @@ void setCmy()
 
   switch (m_presetCmy)
   {
+
+  
     case 0:
+    debugLogging("case 0", 2);
       colorNumberHelkBout = 0;
       colorValueHelkBout = 255;
       updateColor();
-  
+
       colorNumberHelkBout = 1;
       colorValueHelkBout = 0;
       updateColor();
-  
+
       colorNumberHelkBout = 2;
       colorValueHelkBout = 0;
       updateColor();
-    break;
-    
+      delay(500);
+      break;
+
     case 1:
+    debugLogging("case 1", 2);
       colorNumberHelkBout = 0;
       colorValueHelkBout = 0;
       updateColor();
-  
+
       colorNumberHelkBout = 1;
       colorValueHelkBout = 255;
       updateColor();
-  
+
       colorNumberHelkBout = 2;
       colorValueHelkBout = 0;
       updateColor();
-    break;
-    
-    default:
+      delay(500);
+      break;
+
+    case 2:
+    debugLogging("case default", 2);
       colorNumberHelkBout = 0;
       colorValueHelkBout = 0;
       updateColor();
-  
+
       colorNumberHelkBout = 1;
       colorValueHelkBout = 0;
       updateColor();
-  
+
       colorNumberHelkBout = 2;
       colorValueHelkBout = 255;
       updateColor();
-    break;
+      delay(500);
+      break;
   }
 
 }
 
-void setRgb()
+void colorRGB()
+{
+  static int m_presetRgb = 0; 
+
+  if (m_presetRgb <= 2)
+  {
+    m_presetRgb++;
+  }
+  else
+  {
+    m_presetRgb = 0;
+  }
+
+     
+  switch(m_presetRgb){
+    case 0:
+      debugLogging("case 0", 2);
+      setRgb(255,0,0);
+      delay(500);
+    break;
+
+    case 1:
+      debugLogging("case 1", 2);
+      setRgb(0,255,0);
+      delay(500);
+    break;
+
+    case 2:
+      debugLogging("case 2", 2);
+      setRgb(0,0,255);
+      delay(500);
+    break;
+  }
+}
+
+void setRgb(int red, int green, int blue)
 {
 
+
+    red = 255 - red;
+    green = 255 - green;
+    blue = 255 - blue;
+ 
+
+    analogWrite(aoRedLedHelkBout, red);
+    analogWrite(aoGreenLedHelkBout, green);
+    analogWrite(aoBlueLedHelkBout, blue);
 }
+
 
 
 
