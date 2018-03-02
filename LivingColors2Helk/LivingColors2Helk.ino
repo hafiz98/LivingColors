@@ -137,16 +137,15 @@ void updateColor()
   {
     case 0:
       analogWrite(aoRedLedHelkBout, colorValueHelkBout);
-            //debugLogging("Red", 1);
-      break;
+    break;
+    
     case 1:
       analogWrite(aoGreenLedHelkBout, colorValueHelkBout);
-            //debugLogging("Green", 1);
-      break;
+    break;
+    
     default:
       analogWrite(aoBlueLedHelkBout, colorValueHelkBout);
-            //debugLogging("Blue", 1);
-      break;
+    break;
   }
 
 
