@@ -8,6 +8,7 @@
 //09-02-2018: Initial creation
 //21-02-2018: Start Living Colors 2
 //28-02-2018: Added CMY
+//07-03-2018: Added RGB
 
 // Globals
 bool enableLog;
@@ -63,16 +64,13 @@ void setup()
   Serial.println("init...");
   initGlobals();
   initPins();
-
-  //demoMode();
-  //updateColor();
-
+  demoMode();
 }
 
 void loop()
 {
   handlePresets();
-  mixColor();
+  //mixColor();
 }
 
 
@@ -125,19 +123,16 @@ void demoMode()
       delay(5);
       colorValueHelkBout++;
     }
-
-
     colorNumberHelkBout++;
   }
-
   debugLogging("Demo mode finished", 2);
 }
 
 void updateColor()
 {
-  //debugLogging("Updating color, nr:" + (String)colorNumberHelkBout + " value: " + (String)colorValueHelkBout + ".  Knop = " + diPresetCmyHelkBout, 2);
-  //debugLogging("Color value: " + (String)colorValueHelkBout, 1);
- // debugLogging("Update color Started", 2);
+  debugLogging("Updating color, nr:" + (String)colorNumberHelkBout + " value: " + (String)colorValueHelkBout + ".  Knop = " + diPresetCmyHelkBout, 2);
+ debugLogging("Color value: " + (String)colorValueHelkBout, 1);
+  debugLogging("Update color Started", 2);
   switch (colorNumberHelkBout)
   {
     case 0:
@@ -163,15 +158,14 @@ void handlePresets()
   if (digitalRead(diPresetCmyHelkBout) == LOW)
   {
     setCmy();
-    debugLogging("CmyKnop is pressed", 2);
-  delay(250);
+    delay(500);
   }
-  
+
   if (digitalRead(diPresetRgbHelkBout) == LOW)
   {
+    debugLogging("Knop RGB is low", 1);
     colorRGB();
-    debugLogging("RgbKnop is pressed", 2);
-      delay(250);
+    delay(500);
   }
 }
 
@@ -249,41 +243,44 @@ void colorRGB()
 {
   //static int m_presetRgb = 0;
 
-  if (presetRgbHelkBout <= 2)
+  if (presetRgbHelkBout <= 3)
   {
     presetRgbHelkBout++;
     debugLogging("Preset RGB = " + (String)presetRgbHelkBout, 2);
-    //      colorNumberHelkBout = m_presetRgb;
-    //      colorValueHelkBout = map(potValueHelkBout, 0, 1023, 0, 255);
-    //      updateColor();
   }
   else
   {
     presetRgbHelkBout = 0;
   }
 
-  //  switch(m_presetRgb)
-  //  {
-  //    case 0:
-  //      debugLogging("case 0", 2);
-  //      setRgb(255,0,0);
-  //      delay(500);
-  //    break;
-  //
-  //    case 1:
-  //      debugLogging("case 1", 2);
-  //      setRgb(0,255,0);
-  //      delay(500);
-  //    break;
-  //
-  //    case 2:
-  //      debugLogging("case 2", 2);
-  //      setRgb(0,0,255);
-  //      delay(500);
-  //    break;
-  //
-  //  }
-  //
+  switch (presetRgbHelkBout)
+  {
+    case 0:
+      debugLogging("Red", 2);
+      setRgb(255, 0, 0);
+      delay(500);
+      break;
+
+    case 1:
+      debugLogging("Green", 2);
+      setRgb(0, 255, 0);
+      delay(500);
+      break;
+
+    case 2:
+      debugLogging("Blue", 2);
+      setRgb(0, 0, 255);
+      delay(500);
+      break;
+
+    case 3:
+
+      debugLogging("Potentiometer", 2);
+      mixColor();
+      delay(500);
+      break;
+  }
+
 }
 
 void mixColor()
